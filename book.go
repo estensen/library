@@ -40,9 +40,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	fmt.Printf("title | author | isbn\n")
 	for _, book := range books {
-		fmt.Printf("%s, %s, %s", book.title, book.author, book.isbn)
+		fmt.Printf("%s, %s, %s\n", book.title, book.author, book.isbn)
 	}
-
-	fmt.Println("All books printed")
 }
