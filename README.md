@@ -17,8 +17,10 @@ $ bash populate_db.sh
 ## Run
 ```bash
 $ go run book.go
-title | author | isbn
-Emma, Jayne Austen, 9781503261969
-The Time Machine, H. G. Wells, 9781505255607
-The Prince, Niccolò Machiavelli, 9781503379640
+```
+
+## Query
+```bash
+$ curl localhost:3000/books
+[{"Isbn":"9781503261969","Title":"Emma","Author":"Jayne Austen"},{"Isbn":"9781505255607","Title":"The Time Machine","Author":"H. G. Wells"},{"Isbn":"9781503379640","Title":"The Prince","Author":"Niccolò Machiavelli"}]
 ```

@@ -2,25 +2,27 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"log"
+	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type Book struct {
-	isbn string
-	title string
-	author string
+	Isbn string
+	Title string
+	Author string
 }
 
-func main() {
-	db, err := sql.Open("mysql", "root@/library")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+var db *sql.DB
 
+func main() {
+	http.HandleFunc("/books", booksHandler)
+	http.ListenAndServe(":3000", nil)
+}
+
+func booksHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT * FROM books")
 	if err != nil {
 		log.Fatal(err)
@@ -30,7 +32,7 @@ func main() {
 	books := make([]*Book, 0)
 	for rows.Next() {
 		book := new(Book)
-		err := rows.Scan(&book.isbn, &book.title, &book.author)
+		err := rows.Scan(&book.Isbn, &book.Title, &book.Author)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -40,8 +42,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("title | author | isbn\n")
-	for _, book := range books {
-		fmt.Printf("%s, %s, %s\n", book.title, book.author, book.isbn)
+	body, _ := json.Marshal(books)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(body)
+}
+
+func init() {
+	var err error
+	db, err = sql.Open("mysql", "root@/library")
+	if err != nil {
+		log.Fatal(err)
 	}
 }
