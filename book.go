@@ -47,7 +47,7 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	body, _ := json.Marshal(books)
+	body, _ := json.MarshalIndent(books, "", " ")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }

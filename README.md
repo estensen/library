@@ -22,5 +22,21 @@ $ go run book.go
 ## Query
 ```bash
 $ curl localhost:3000/books
-[{"Isbn":"9781503261969","Title":"Emma","Author":"Jayne Austen"},{"Isbn":"9781505255607","Title":"The Time Machine","Author":"H. G. Wells"},{"Isbn":"9781503379640","Title":"The Prince","Author":"Niccolò Machiavelli"}]
+[
+ {
+  "Isbn": "9781503261969",
+  "Title": "Emma",
+  "Author": "Jayne Austen"
+ },
+ {
+  "Isbn": "9781505255607",
+  "Title": "The Time Machine",
+  "Author": "H. G. Wells"
+ },
+ {
+  "Isbn": "9781503379640",
+  "Title": "The Prince",
+  "Author": "Niccolò Machiavelli"
+ }
+]
 ```
