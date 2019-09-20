@@ -23,6 +23,11 @@ func main() {
 }
 
 func booksHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
+
 	rows, err := db.Query("SELECT * FROM books")
 	if err != nil {
 		log.Fatal(err)
