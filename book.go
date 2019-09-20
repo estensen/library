@@ -51,14 +51,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := json.MarshalIndent(books, "", " ")
-	if err != nil {
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(data)
+	respondWithJSON(w, http.StatusOK, books)
 }
 
 func booksShow(w http.ResponseWriter, r *http.Request) {
@@ -86,13 +79,18 @@ func booksShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := json.MarshalIndent(book, "", " ")
+	respondWithJSON(w, http.StatusOK, book)
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	data, err := json.MarshalIndent(payload, "", " ")
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
 	w.Write(data)
 }
 
