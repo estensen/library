@@ -1,8 +1,8 @@
-# mock
-Learn to mock with Go
+# library
+Learn to use databases with Go
 
 ## Install
-mock requires Go and mysql
+library requires Go and mysql
 
 Create db:
 ```bash
