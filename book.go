@@ -21,6 +21,7 @@ var db *sql.DB
 func main() {
 	http.HandleFunc("/books", booksIndex)
 	http.HandleFunc("/books/show", booksShow)
+	http.HandleFunc("/books/create", booksCreate)
 	http.ListenAndServe(":3000", nil)
 }
 
@@ -42,7 +43,8 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		book := new(Book)
 		err := rows.Scan(&book.Isbn, &book.Title, &book.Author)
 		if err != nil {
-			log.Fatal(err)
+			http.Error(w, http.StatusText(500), 500)
+			return
 		}
 		books = append(books, book)
 	}
@@ -80,6 +82,29 @@ func booksShow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusOK, book)
+}
+
+func booksCreate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "PUT" {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
+
+	isbn := r.FormValue("isbn")
+	title := r.FormValue("title")
+	author := r.FormValue("author")
+	if isbn == "" || title == "" || author == "" {
+		http.Error(w, http.StatusText(400), 400)
+		return
+	}
+
+	_, err := db.Exec("INSERT INTO books VALUES(?, ?, ?)", isbn, title, author)
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

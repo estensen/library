@@ -52,3 +52,12 @@ $ curl "localhost:3000/books/show?isbn=9781505255607"
  "Author": "H. G. Wells"
 }
 ```
+
+PUT book
+```bash
+$ curl -i -X PUT -d "isbn=9780553294385&title=I, Robot&author=Isaac Asimov" "http://localhost:3000/books/create"
+HTTP/1.1 200 OK
+Date: Fri, 20 Sep 2019 13:18:12 GMT
+Content-Length: 0
+
+```
