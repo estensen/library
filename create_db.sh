@@ -5,8 +5,8 @@ mysql -u root <<MYSQL_SCRIPT
   USE library;
 
   CREATE TABLE IF NOT EXISTS books (
-      isbn char(13),
-      title varchar(50),
-      author varchar(50)
+      isbn char(13) NOT NULL,
+      title varchar(50) NOT NULL,
+      author varchar(50) NOT NULL
   );
 MYSQL_SCRIPT
