@@ -28,9 +28,10 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := db.Query("SELECT * FROM books")
+	rows, err := db.Query("SELECT isbn, title, author FROM books")
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
 	}
 	defer rows.Close()
 
@@ -44,12 +45,18 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 		books = append(books, book)
 	}
 	if err = rows.Err(); err != nil {
-		log.Fatal(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
 	}
 
-	body, _ := json.MarshalIndent(books, "", " ")
+	data, err := json.MarshalIndent(books, "", " ")
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(body)
+	w.Write(data)
 }
 
 func init() {
