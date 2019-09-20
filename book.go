@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -18,11 +19,12 @@ type Book struct {
 var db *sql.DB
 
 func main() {
-	http.HandleFunc("/books", booksHandler)
+	http.HandleFunc("/books", booksIndex)
+	http.HandleFunc("/books/show", booksShow)
 	http.ListenAndServe(":3000", nil)
 }
 
-func booksHandler(w http.ResponseWriter, r *http.Request) {
+func booksIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(405), 405)
 		return
@@ -50,6 +52,41 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, err := json.MarshalIndent(books, "", " ")
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+func booksShow(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), 405)
+		return
+	}
+
+	isbn := r.FormValue("isbn")
+	if isbn == "" {
+		http.Error(w, http.StatusText(400), 400)
+		return
+	}
+
+	row := db.QueryRow("SELECT isbn, title, author FROM books WHERE isbn = ?", isbn)
+
+	book := new(Book)
+	err := row.Scan(&book.Isbn, &book.Title, &book.Author)
+	if err == sql.ErrNoRows {
+		http.NotFound(w, r)
+		return
+	} else if err != nil {
+		fmt.Print(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
+	data, err := json.MarshalIndent(book, "", " ")
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 		return

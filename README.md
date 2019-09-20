@@ -20,8 +20,10 @@ $ go run book.go
 ```
 
 ## Query
+
+GET books
 ```bash
-$ curl localhost:3000/books
+$ curl "localhost:3000/books"
 [
  {
   "Isbn": "9781503261969",
@@ -39,4 +41,14 @@ $ curl localhost:3000/books
   "Author": "Niccolò Machiavelli"
  }
 ]
+```
+
+GET book by isbn
+```bash
+$ curl "localhost:3000/books/show?isbn=9781505255607"
+{
+ "Isbn": "9781505255607",
+ "Title": "The Time Machine",
+ "Author": "H. G. Wells"
+}
 ```
