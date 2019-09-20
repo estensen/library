@@ -2,7 +2,7 @@
 Learn to mock with Go
 
 ## Install
-mock requires Go and mysql-
+mock requires Go and mysql
 
 Create db:
 ```bash
