@@ -1,9 +1,9 @@
-name: Go
+name: Push
 on: [push]
 jobs:
 
-  build:
-    name: Build
+  push:
+    name: Push
     runs-on: ubuntu-latest
     steps:
 
@@ -26,3 +26,6 @@ jobs:
 
     - name: Build
       run: go build -v .
+      
+    - name: Test
+      run: go test ./...
