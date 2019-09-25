@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 type Book struct {
@@ -18,6 +19,7 @@ type Book struct {
 
 type server struct {
 	db *sql.DB
+	router *mux.Router
 }
 
 func main() {
@@ -31,11 +33,19 @@ func main() {
 		log.Fatal(err)
 	}
 
+	router := mux.NewRouter()
+
 	srv := server{
 		db: db,
+		router: router,
 	}
 
 	srv.routes()
+	http.ListenAndServe(":3000", srv.router)
+}
+
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.router.ServeHTTP(w, r)
 }
 
 func (s *server) handlerBooksIndex() http.HandlerFunc {

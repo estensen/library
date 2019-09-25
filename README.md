@@ -16,7 +16,7 @@ $ bash populate_db.sh
 
 ## Run
 ```bash
-$ go run book.go
+$ go run .
 ```
 
 ## Query
