@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -12,14 +11,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Book struct {
-	Isbn   string
-	Title  string
-	Author string
-}
-
 type server struct {
-	db *models.DB
+	db     *models.DB
 	router *mux.Router
 }
 
@@ -32,7 +25,7 @@ func main() {
 	router := mux.NewRouter()
 
 	srv := server{
-		db: db,
+		db:     db,
 		router: router,
 	}
 
@@ -52,27 +45,8 @@ func (s *server) handlerBooksIndex() http.HandlerFunc {
 			return
 		}
 
-		rows, err := s.db.Query("SELECT isbn, title, author FROM books")
+		books, err := s.db.AllBooks()
 		if err != nil {
-			log.Println("could not get books: ", err)
-			http.Error(w, http.StatusText(500), 500)
-			return
-		}
-		defer rows.Close()
-
-		books := make([]*Book, 0)
-		for rows.Next() {
-			book := new(Book)
-			err := rows.Scan(&book.Isbn, &book.Title, &book.Author)
-			if err != nil {
-				log.Println("could not scan books: ", err)
-				http.Error(w, http.StatusText(500), 500)
-				return
-			}
-			books = append(books, book)
-		}
-		if err = rows.Err(); err != nil {
-			log.Println("got an error while looping books", err)
 			http.Error(w, http.StatusText(500), 500)
 			return
 		}
@@ -95,17 +69,17 @@ func (s *server) handlerBooksShow() http.HandlerFunc {
 			return
 		}
 
-		row := s.db.QueryRow("SELECT isbn, title, author FROM books WHERE isbn = ?", isbn)
-
-		book := new(Book)
-		err := row.Scan(&book.Isbn, &book.Title, &book.Author)
-		if err == sql.ErrNoRows {
-			http.NotFound(w, r)
-			return
-		} else if err != nil {
-			fmt.Print(err)
-			http.Error(w, http.StatusText(500), 500)
-			return
+		book, err := s.db.GetBook(isbn)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				log.Printf("book with isbn %s was not found", isbn)
+				http.NotFound(w, r)
+				return
+			} else {
+				log.Println("could not get book", err)
+				http.Error(w, http.StatusText(500), 500)
+				return
+			}
 		}
 
 		respondWithJSON(w, http.StatusOK, book)
@@ -129,9 +103,8 @@ func (s *server) handlerBooksCreate() http.HandlerFunc {
 			return
 		}
 
-		_, err := s.db.Exec("INSERT INTO books VALUES(?, ?, ?)", isbn, title, author)
+		err := s.db.AddBook(isbn, title, author)
 		if err != nil {
-			log.Printf("a book could not be inserted into the db: %s", err)
 			http.Error(w, http.StatusText(500), 500)
 			return
 		}

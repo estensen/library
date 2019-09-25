@@ -22,7 +22,7 @@ func TestShouldGetBooks(t *testing.T) {
 	router := mux.NewRouter()
 
 	srv := server{
-		db: &models.DB{db},
+		db:     &models.DB{db},
 		router: router,
 	}
 	srv.routes()
@@ -36,7 +36,7 @@ func TestShouldGetBooks(t *testing.T) {
 
 	mock.ExpectQuery("^SELECT (.+) FROM books$").WillReturnRows(rows)
 
-	data := []*Book{
+	data := []*models.Book{
 		{"9781503261969", "Emma", "Jayne Austen"},
 		{"9781505255607", "The Time Machine", "H. G. Wells"},
 		{"9781503379640", "The Prince", "Niccolò Machiavelli"},
