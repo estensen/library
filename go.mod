@@ -1,4 +1,4 @@
-module github.com/estensen/mock
+module github.com/estensen/library
 
 go 1.13
 

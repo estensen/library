@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/estensen/library/models"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
@@ -18,19 +19,14 @@ type Book struct {
 }
 
 type server struct {
-	db *sql.DB
+	db *models.DB
 	router *mux.Router
 }
 
 func main() {
-	var err error
-	db, err := sql.Open("mysql", "root@/library")
+	db, err := models.NewDB("root@/library")
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err = db.Ping(); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	router := mux.NewRouter()

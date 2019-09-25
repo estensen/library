@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/estensen/library/models"
 	"github.com/gorilla/mux"
 	"github.com/matryer/is"
 	"net/http"
@@ -21,7 +22,7 @@ func TestShouldGetBooks(t *testing.T) {
 	router := mux.NewRouter()
 
 	srv := server{
-		db: db,
+		db: &models.DB{db},
 		router: router,
 	}
 	srv.routes()
