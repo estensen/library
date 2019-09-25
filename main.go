@@ -30,6 +30,8 @@ func main() {
 	}
 
 	srv.routes()
+
+	log.Println("Server is running on port 3000")
 	http.ListenAndServe(":3000", srv.router)
 }
 

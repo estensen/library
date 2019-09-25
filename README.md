@@ -17,6 +17,7 @@ $ bash scripts/populate_db.sh
 ## Run
 ```bash
 $ go run .
+2019/09/25 13:27:23 Server is running on port 3000
 ```
 
 ## Query
