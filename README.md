@@ -6,12 +6,12 @@ library requires Go and mysql
 
 Create db:
 ```bash
-$ bash create_db.sh
+$ bash scripts/create_db.sh
 ```
 
 Populate db:
 ```bash
-$ bash populate_db.sh
+$ bash scripts/populate_db.sh
 ```
 
 ## Run
